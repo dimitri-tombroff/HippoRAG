@@ -18,7 +18,6 @@ setuptools.setup(
     install_requires=[
         "torch==2.5.1",
         "transformers==4.45.2",
-        "vllm==0.6.6.post1",
         "openai==1.109.1",
         "litellm==1.73.1",
         "gritlm==1.0.2",
@@ -30,5 +29,8 @@ setuptools.setup(
         "einops", # No version specified
         "tqdm", # No version specified
         "boto3", # No version specified
-    ]
+    ],
+    extras_require={
+        "offline": ["vllm==0.6.6.post1"],
+    }
 )

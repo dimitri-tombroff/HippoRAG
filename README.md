@@ -45,6 +45,11 @@ conda create -n hipporag python=3.10
 conda activate hipporag
 pip install hipporag
 ```
+To use the offline vLLM-based mode (requires CUDA), install the optional extra:
+
+```sh
+pip install "hipporag[offline]"
+```
 Initialize the environmental variables and activate the environment:
 
 ```sh

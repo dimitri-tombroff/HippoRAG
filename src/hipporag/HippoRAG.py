@@ -21,8 +21,6 @@ from .llm import _get_llm_class, BaseLLM
 from .embedding_model import _get_embedding_model_class, BaseEmbeddingModel
 from .embedding_store import EmbeddingStore
 from .information_extraction import OpenIE
-from .information_extraction.openie_vllm_offline import VLLMOfflineOpenIE
-from .information_extraction.openie_transformers_offline import TransformersOfflineOpenIE
 from .evaluation.retrieval_eval import RetrievalRecall
 from .evaluation.qa_eval import QAExactMatch, QAF1Score
 from .prompts.linking import get_query_instruction
@@ -127,9 +125,20 @@ class HippoRAG:
         if self.global_config.openie_mode == 'online':
             self.openie = OpenIE(llm_model=self.llm_model)
         elif self.global_config.openie_mode == 'offline':
+            try:
+                from .information_extraction.openie_vllm_offline import VLLMOfflineOpenIE
+            except ImportError as exc:
+                raise ImportError(
+                    "offline openie_mode requires the optional dependency `vllm` "
+                    "and a CUDA-enabled environment. Install with `pip install hipporag[offline]` "
+                    "to use this mode."
+                ) from exc
             self.openie = VLLMOfflineOpenIE(self.global_config)
         elif self.global_config.openie_mode ==  'Transformers-offline':
+            from .information_extraction.openie_transformers_offline import TransformersOfflineOpenIE
             self.openie = TransformersOfflineOpenIE(self.global_config)
+        else:
+            raise ValueError(f"Unsupported openie_mode: {self.global_config.openie_mode}")
 
         self.graph = self.initialize_graph()
 
